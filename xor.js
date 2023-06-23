@@ -6,8 +6,24 @@ var xor = (function() {
         flat = Array.prototype.flat,
         includes = Array.prototype.includes,
         each = Array.prototype.forEach,
+        slice = Array.prototype.slice,
         toArray = Array.from,
         isArray = Array.isArray;
+
+    var identity = function(v) {
+        return v;
+    };
+
+    var last = function(o) {
+        return o[o.length - 1];
+    };
+
+    var drop = function(o, n) {
+        if (n == null) {
+            n = 0;
+        }
+        return slice.call(o, 0, o.length - n);
+    };
 
     var uniq = function(array) {
         return toArray(new Set(array));
@@ -25,8 +41,15 @@ var xor = (function() {
         }));
     };
 
-    return function(arrays) {
-        arrays = filter.call(arguments, function(array) {
+    return function(arrays, iteratee) {
+        iteratee = last(arguments);
+        if (typeof iteratee !== "function") {
+            arrays = drop(arguments);
+            iteratee = identity;
+        } else {
+            arrays = drop(arguments, 1);
+        }
+        arrays = filter.call(arrays, function(array) {
             return isArray(array);
         });
         if (!arrays.length) {
@@ -34,7 +57,7 @@ var xor = (function() {
         }
         return uniq(xor(arrays, function(array, values) {
             return filter.call(array, function(v) {
-                return !includes.call(values, v);
+                return !includes.call(map.call(values, iteratee), iteratee(v));
             });
         }));
     };
