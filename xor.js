@@ -3,7 +3,7 @@ var xor = (function() {
 
     var filter = Array.prototype.filter,
         map = Array.prototype.map,
-        flat = Array.prototype.flat,
+        flatMap = Array.prototype.flatMap,
         includes = Array.prototype.includes,
         each = Array.prototype.forEach,
         slice = Array.prototype.slice,
@@ -30,7 +30,7 @@ var xor = (function() {
     };
 
     var xor = function(arrays, diff) {
-        return flat.call(map.call(arrays, function(array, current) {
+        return flatMap.call(arrays, function(array, current) {
             each.call(arrays, function(each, index) {
                 if (index === current) {
                     return;
@@ -38,7 +38,7 @@ var xor = (function() {
                 array = diff(array, each);
             });
             return array;
-        }));
+        });
     };
 
     return function(arrays, iteratee) {
