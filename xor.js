@@ -10,6 +10,21 @@ var xor = (function() {
         toArray = Array.from,
         isArray = Array.isArray;
 
+    var detect = [
+        'function', 
+        'boolean', 
+        'number', 
+        'bigint', 
+        'string', 
+        'symbol'
+    ];
+
+    var property = function(key) {
+        return function(o) {
+            return o == null ? o : o[key];
+        };
+    };
+
     var identity = function(v) {
         return v;
     };
@@ -43,11 +58,14 @@ var xor = (function() {
 
     return function(arrays, iteratee) {
         iteratee = last(arguments);
-        if (typeof iteratee !== "function") {
+         if (includes.call(detect, typeof iteratee)) {   
+            arrays = drop(arguments, 1);
+            if (typeof iteratee !== "function") {
+                iteratee = property(iteratee);
+            }
+        } else {
             arrays = drop(arguments);
             iteratee = identity;
-        } else {
-            arrays = drop(arguments, 1);
         }
         arrays = filter.call(arrays, function(array) {
             return isArray(array);
