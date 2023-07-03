@@ -11,12 +11,12 @@ var xor = (function() {
         isArray = Array.isArray;
 
     var detect = [
-        'function', 
-        'boolean', 
-        'number', 
-        'bigint', 
-        'string', 
-        'symbol'
+        "function", 
+        "boolean", 
+        "number", 
+        "bigint", 
+        "string", 
+        "symbol"
     ];
 
     var property = function(key) {
@@ -58,7 +58,7 @@ var xor = (function() {
 
     return function(arrays, iteratee) {
         iteratee = last(arguments);
-         if (includes.call(detect, typeof iteratee)) {   
+        if (includes.call(detect, typeof iteratee)) {   
             arrays = drop(arguments, 1);
             if (typeof iteratee !== "function") {
                 iteratee = property(iteratee);
