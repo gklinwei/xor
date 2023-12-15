@@ -44,55 +44,63 @@ var typed = (function() {
         isCreateStyle = true;
     };
 
-    var handle = function(o) {
+    var handle = function(handleParameter) {
         var { 
-            element, text, 
-            cursor, strings, 
-            typedSpeed, delay
-        } = o;
-        var mutation = new MutationObserver((function(strIndex, charIndex) {
-            var str;
-            var slice = function(index) {
-                return Array.from(str).slice(0, index).join('');
-            };
-            var back = function(interval) {
-                clearInterval(interval);
-                cursor.classList.add('typed--blink');
-                var timeout = setTimeout(function() {
-                    cursor.classList.remove('typed--blink');
-                    interval = setInterval(function() {
-                        text.textContent = slice(--charIndex);
-                        if (!text.textContent) {
-                            clearInterval(interval);
-                            charIndex = 0;
-                        }
-                    }, Math.floor(1000 / typedSpeed));
-                    clearTimeout(timeout);
-                }, delay);
-            };
-            return function() {
-                if (!text.textContent) {
-                    strIndex++;
-                }
-                str = strings[strIndex % strings.length].trim();
-                if (!text.textContent) {
-                    var interval = setInterval(function() {
-                        text.textContent = slice(++charIndex);
-                        if (text.textContent.length === str.length) {
-                            back(interval);
-                        }
-                    }, Math.floor(1000 / typedSpeed));
-                }
-            };
-        })(-1, 0));
+            element, 
+            text, 
+            cursor, 
+            strings, 
+            typedSpeed, 
+            delay
+        } = handleParameter;
+        var mutation = new MutationObserver(
+            (function(strIndex, charIndex) {
+                var innerText;
+                var innerTextSlice = function(index) {
+                    return Array.from(innerText).slice(0, index).join('');
+                };
+                var backSpace = function(interval) {
+                    clearInterval(interval);
+                    cursor.classList.add('typed--blink');
+                    var timeout = setTimeout(function() {
+                        cursor.classList.remove('typed--blink');
+                        interval = setInterval(function() {
+                            text.textContent = innerTextSlice(--charIndex);
+                            if (!text.textContent) {
+                                clearInterval(interval);
+                                charIndex = 0;
+                            }
+                        }, Math.floor(1000 / typedSpeed));
+                        clearTimeout(timeout);
+                    }, delay);
+                };
+                return function() {
+                    if (!text.textContent) {
+                        strIndex++;
+                    }
+                    innerText = strings[strIndex % strings.length].trim();
+                    if (!text.textContent) {
+                        var interval = setInterval(function() {
+                            text.textContent = innerTextSlice(++charIndex);
+                            if (text.textContent.length === innerText.length) {
+                                backSpace(interval);
+                            }
+                        }, Math.floor(1000 / typedSpeed));
+                    }
+                };
+            })(-1, 0)
+        );
         mutation.observe(element, mutationConfig);
     };
 
     var typed = function(element, options) {
-    	var [strings, typedSpeed, delay, cursorColor, lodash] = [
-    	    options.strings, options.typedSpeed,
-    	    options.delay, options.cursorColor, options.lodash
-    	];
+    	var { 
+            strings, 
+            typedSpeed, 
+            delay, 
+            cursorColor, 
+            lodash 
+        } = options;
     	(!isCreateStyle) && createStyle();
     	element.innerHTML = '<span></span><span></span>';
     	var [text, cursor] = element.children;
