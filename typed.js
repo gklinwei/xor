@@ -1,7 +1,7 @@
 var typed = (function() {
-	'use strict';
+    'use strict';
 
-	var filter = Array.prototype.filter,
+    var filter = Array.prototype.filter,
         forEach = Array.prototype.forEach,
         keys = Object.keys;
 
@@ -13,7 +13,7 @@ var typed = (function() {
         '@keyframes blink { from { opacity: 1 } to { opacity: 0 } }'
     ];
 
-	var mutationConfig = {
+    var mutationConfig = {
         childList: true,
         subtree: true
     };
@@ -45,15 +45,16 @@ var typed = (function() {
     };
 
     var handle = function(o) {
-        var { element, text, cursor, strings, typedSpeed, delay } = o;
+        var { 
+            element, text, 
+            cursor, strings, 
+            typedSpeed, delay
+        } = o;
         var mutation = new MutationObserver((function(strIndex, charIndex) {
-
             var str;
-
             var slice = function(index) {
                 return Array.from(str).slice(0, index).join('');
             };
-
             var back = function(interval) {
                 clearInterval(interval);
                 cursor.classList.add('typed--blink');
@@ -69,7 +70,6 @@ var typed = (function() {
                     clearTimeout(timeout);
                 }, delay);
             };
-
             return function() {
                 if (!text.textContent) {
                     strIndex++;
@@ -110,33 +110,33 @@ var typed = (function() {
         return element;
     };
 
-	return function(el, options) {
-		try {
-		    var element = document.querySelector(el);
-		} catch (e) {
-			return null;
-		}
-		if (options == null) {
-			options = defaultOptions;
-		}
+    return function(el, options) {
+        try {
+            var element = document.querySelector(el);
+        } catch (e) {
+            return null;
+        }
+        if (options == null) {
+            options = defaultOptions;
+        }
         forEach.call(keys(defaultOptions), function(key) {
             if (!hasOwnProperty(options, key)) {
                 options[key] = defaultOptions[key];
             }
         });
-		if (!Array.isArray(options.strings)) {
-			return element;
-		}
-		options.strings = filter.call(options.strings, function(s) {
-			return typeof s === 'string';
-		});
-		if (!options.strings.length) {
-			return element;
-		}
-		[options.typedSpeed, options.delay] = [
-		    between(options.typedSpeed, 1, 100), 
-		    between(options.delay, 1000, 20000)
-		];
-		return typed(element, options);
-	};
+        if (!Array.isArray(options.strings)) {
+            return element;
+        }
+        options.strings = filter.call(options.strings, function(s) {
+            return typeof s === 'string';
+        });
+        if (!options.strings.length) {
+            return element;
+        }
+        [options.typedSpeed, options.delay] = [
+            between(options.typedSpeed, 1, 100), 
+            between(options.delay, 1000, 20000)
+        ];
+        return typed(element, options);
+    };
 })();
