@@ -121,12 +121,16 @@ var typed = (function() {
     return function(el, options) {
         try {
             var element = document.querySelector(el);
+            if (!element) {
+                return null;
+            }
         } catch (e) {
             return null;
         }
         if (options == null) {
             options = defaultOptions;
         }
+        options = options || {};
         forEach.call(keys(defaultOptions), function(key) {
             if (!hasOwnProperty(options, key)) {
                 options[key] = defaultOptions[key];
