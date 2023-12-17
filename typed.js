@@ -53,7 +53,8 @@ var typed = (function() {
             typedSpeed, 
             delay
         } = handleParameter;
-        var mutation = new MutationObserver(
+        var mutation = new MutationObserver
+        (
             (function(strIndex, charIndex) {
                 var innerText;
                 var innerTextSlice = function(index) {
